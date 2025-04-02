@@ -19,9 +19,8 @@
       "exportedResources": [
         "log4j2.xml",
         "global.xml",
-        "salesforce-api-dev.yaml",
         "application-types.xml",
-        "salesforce-api-test.yaml",
+        "dev.yaml",
         "api/datatype-library/datatypes.raml",
         "api/exchange_modules/0c5afb74-0b0b-415a-a863-8da8b128dbaa/uhub-x-transaction-id/2.0.0/uhub-x-transaction-id.raml",
         "api/exchange_modules/0c5afb74-0b0b-415a-a863-8da8b128dbaa/uhub-x-correlation-id/1.0.1/uhub-x-correlation-id.raml",

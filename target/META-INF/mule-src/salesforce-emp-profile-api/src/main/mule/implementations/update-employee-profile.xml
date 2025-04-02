@@ -48,6 +48,22 @@ output application/json
 	}]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="de4c992f-5c5b-4eb8-b5b6-edd8e443e7a3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+[
+  {
+    "Id": "a00gL000002G6mfQAC",
+    "Name": "Tommie",
+    "emp_email__c": "Nina.O'Reilly@yopmail.com",
+    "emp_phone__c": "79799",
+    "emp_skills__c": "python"
+  }
+&#93;&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform> [STUDIO] -->
 		<salesforce:update type="Employee_Profile__c" doc:name="Update Record" doc:id="dae813b0-67fa-4be4-8881-8aa9e265bf9f" config-ref="Salesforce_Config">
 		</salesforce:update>
 		<ee:transform doc:name="Set Response">
