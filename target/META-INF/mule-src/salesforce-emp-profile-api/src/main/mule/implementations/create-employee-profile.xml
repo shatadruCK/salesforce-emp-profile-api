@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<flow name="post:\createEmployeeProfile:application\json:salesforce-emp-profile-api-config">
+        <logger level="INFO" doc:name="Start Log" doc:id="2ebf0066-fcf0-44ec-8a80-f97f95f7c0b1" message="Create employee event started"/>
+		<ee:transform doc:name="Set correlationId" doc:id="c7dd1d7e-c055-4c1a-a34d-8eb9e0dede72">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="correlationId"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers.'x-correlation-id' default payload.empName]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Mapping Input Data To Salesforce Object">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Name: payload.empName,
+	emp_email__c: payload.empEmail,
+	emp_phone__c: payload.empPhone as String,
+	emp_skills__c: payload.empSkills,
+}]]]></ee:set-payload>
+            </ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="employeeEmail" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.empEmail
+]]></ee:set-variable>
+			</ee:variables>
+        </ee:transform>
+		<salesforce:create doc:name="Create Employee Profile" doc:id="b366be36-e50b-45c7-9782-fc5a63a1ca07" config-ref="Salesforce_Config" type="Employee_Profile__c"/>
+		<salesforce:query doc:name="Query Employee Id" doc:id="25515110-59ac-4ec1-b370-d842300a27c5" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT 	employeeID__c FROM Employee_Profile__c WHERE emp_email__c = ':empMail']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	empMail : vars.employeeEmail as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Set Payload" doc:id="03c7df42-137d-4c60-8670-041ba787b413" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"employeeId": payload[0].employeeID__c
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Log" doc:id="bc003885-35c3-4d2c-95f8-9c2476d16259" message="Completed the employee profile creation flow"/>
+    </flow>
+	</mule>

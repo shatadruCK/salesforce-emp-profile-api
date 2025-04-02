@@ -52,7 +52,8 @@ payload.empEmail
 output application/json
 ---
 {
-	"employeeId": payload[0].employeeID__c
+	"employeeId": payload[0].employeeID__c,
+	"message": "success"
 }]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
