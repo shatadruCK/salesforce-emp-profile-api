@@ -38,6 +38,7 @@
 						<username>Shatadru0325</username>
 						<password>Shatadru@123</password>
 						<applicationName>salesforce-emp-profile-api</applicationName>
+						<businessGroupId>0c5afb74-0b0b-415a-a863-8da8b128dbaa</businessGroupId>
 						<environment>DEV</environment>
 						<region>us-east-1</region>
 						<workers>1</workers>
